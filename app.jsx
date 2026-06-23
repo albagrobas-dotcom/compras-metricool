@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solicitud de material · Metricool</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background:#f7f8fc; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; }
+    .card { background:white; border-radius:14px; box-shadow:0 10px 25px rgba(0,0,0,.08); padding:40px; width:100%; max-width:560px; }
+    .logo { width:40px; height:40px; background:linear-gradient(135deg,#7c3aed,#5b21b6); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; font-weight:800; margin-bottom:20px; }
+    h1 { font-size:20px; font-weight:800; color:#111827; margin-bottom:6px; }
+    .sub { font-size:13px; color:#6b7280; margin-bottom:32px; }
+    .field { margin-bottom:18px; }
+    label { display:block; font-size:12px; font-weight:600; color:#111827; margin-bottom:6px; }
+    .req { color:#ef4444; margin-left:2px; }
+    input, select, textarea {
+      width:100%; border:1.5px solid #e8eaf0; border-radius:6px;
+      padding:10px 12px; font-size:13px; font-family:inherit;
+      color:#111827; outline:none; background:white;
+      transition: border-color .15s;
+    }
+    input:focus, select:focus, textarea:focus { border-color:#7c3aed; }
+    textarea { resize:vertical; min-height:90px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+    .slider-row { display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:#111827; margin-bottom:6px; }
+    .slider-val { color:#7c3aed; font-weight:700; }
+    input[type=range] { padding:4px 0; accent-color:#7c3aed; }
+    .priority-box { background:#f7f8fc; border-radius:10px; padding:20px; margin-bottom:20px; }
+    .priority-title { font-size:12px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.8px; margin-bottom:16px; }
+    .score-row { display:flex; align-items:center; gap:12px; padding-top:12px; border-top:1px solid #e8eaf0; margin-top:4px; }
+    .score-num { font-size:28px; font-weight:800; }
+    .badge { display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; }
+    .gdpr { background:#ede9fe; border-radius:8px; padding:14px; margin-bottom:20px; font-size:12px; color:#5b21b6; display:flex; gap:10px; align-items:flex-start; }
+    .gdpr input[type=checkbox] { width:15px; height:15px; margin-top:1px; flex-shrink:0; accent-color:#7c3aed; }
+    .btn { width:100%; background:#7c3aed; color:white; border:none; border-radius:8px; padding:13px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; transition:background .15s; }
+    .btn:hover { background:#5b21b6; }
+    .btn:disabled { opacity:.5; cursor:not-allowed; }
+    .success { text-align:center; padding:40px 20px; }
+    .success-icon { font-size:52px; margin-bottom:16px; }
+    .success h2 { font-size:20px; font-weight:800; color:#111827; margin-bottom:8px; }
+    .success p { font-size:13px; color:#6b7280; }
+    .error-msg { background:#fee2e2; color:#ef4444; border-radius:8px; padding:10px 14px; font-size:13px; margin-bottom:16px; }
+    .anon-note { font-size:11px; color:#9ca3af; display:flex; align-items:center; gap:5px; margin-top:16px; }
+  </style>
+</head>
+<body>
+<div class="card" id="form-card">
+  <div class="logo">C</div>
+  <h1>Solicitud de material</h1>
+  <p class="sub">Rellena el formulario y te informaremos cuando tu solicitud sea procesada.</p>
+
+  <div id="error-msg" class="error-msg" style="display:none"></div>
+
+  <!-- Datos personales -->
+  <div class="grid2">
+    <div class="field">
+      <label>Nombre completo <span class="req">*</span></label>
+      <input type="text" id="name" placeholder="Tu nombre"/>
+    </div>
+    <div class="field">
+      <label>Email <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="tu@metricool.com"/>
+    </div>
+    <div class="field">
+      <label>Teléfono <span class="req">*</span></label>
+      <input type="tel" id="phone" placeholder="6XX XXX XXX"/>
+    </div>
+    <div class="field">
+      <label>Departamento <span class="req">*</span></label>
+      <select id="department">
+        <option value="">— Seleccionar —</option>
+        <option>Marketing</option>
+        <option>Desarrollo</option>
+        <option>Diseño</option>
+        <option>RRHH</option>
+        <option>Ventas</option>
+        <option>Dirección</option>
+        <option>Operaciones</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Dirección de envío <span class="req">*</span></label>
+    <input type="text" id="address" placeholder="Calle, número, ciudad, CP"/>
+  </div>
+
+  <div class="field">
+    <label>¿Qué material necesitas? <span class="req">*</span></label>
+    <textarea id="description" placeholder="Describe el equipo o material que necesitas y para qué lo usarás…"></textarea>
+  </div>
+
+  <!-- Prioridad -->
+  <div class="priority-box">
+    <div class="priority-title">Criterios de prioridad</div>
+
+    <div class="field">
+      <div class="slider-row">
+        <span>Importancia para tu trabajo</span>
+        <span class="slider-val" id="val-work">3/5</span>
+      </div>
+      <input type="range" min="1" max="5" value="3" id="importance_work" oninput="updateSliders()"/>
+    </div>
+
+    <div class="field">
+      <div class="slider-row">
+        <span>Importancia para tus objetivos</span>
+        <span class="slider-val" id="val-goals">3/5</span>
+      </div>
+      <input type="range" min="1" max="5" value="3" id="importance_goals" oninput="updateSliders()"/>
+    </div>
+
+    <div class="field" style="margin-bottom:0">
+      <div class="slider-row">
+        <span>Urgencia</span>
+        <span class="slider-val" id="val-urgency">3/5</span>
+      </div>
+      <input type="range" min="1" max="5" value="3" id="urgency" oninput="updateSliders()"/>
+    </div>
+
+    <div class="score-row">
+      <span style="font-size:13px;color:#6b7280">Prioridad calculada:</span>
+      <span class="score-num" id="score-num" style="color:#3b82f6">3.0</span>
+      <span class="badge" id="score-badge" style="background:#dbeafe;color:#3b82f6">Medio</span>
+    </div>
+  </div>
+
+  <!-- GDPR -->
+  <div class="gdpr">
+    <input type="checkbox" id="gdpr"/>
+    <label for="gdpr" style="cursor:pointer">
+      Acepto que mis datos personales sean tratados por Metricool con el fin de gestionar esta solicitud, de acuerdo con la política de privacidad interna y el RGPD. Los datos serán anonimizados en el sistema y no se compartirán con terceros.
+    </label>
+  </div>
+
+  <button class="btn" id="submit-btn" onclick="enviarSolicitud()" disabled>Enviar solicitud</button>
+  <p class="anon-note">🔒 Tu email, teléfono y dirección se anonimizarán automáticamente.</p>
+</div>
+
+<!-- Pantalla de éxito -->
+<div class="card success" id="success-card" style="display:none">
+  <div class="success-icon">✅</div>
+  <h2>¡Solicitud enviada!</h2>
+  <p>Hemos recibido tu solicitud correctamente.<br/>Te informaremos por email cuando sea procesada.</p>
+</div>
+
+<script>
+  // ── Configuración ──────────────────────────────────────────
+  const SCRIPT_URL = "PEGA_AQUI_TU_URL_DEL_APPS_SCRIPT";
+  // ───────────────────────────────────────────────────────────
+
+  // Activar botón solo si GDPR está marcado y campos rellenos
+  document.getElementById('gdpr').addEventListener('change', checkForm);
+  ['name','email','phone','department','address','description'].forEach(id => {
+    document.getElementById(id).addEventListener('input', checkForm);
+  });
+
+  function checkForm() {
+    const gdpr = document.getElementById('gdpr').checked;
+    const filled = ['name','email','phone','department','address','description']
+      .every(id => document.getElementById(id).value.trim() !== '');
+    document.getElementById('submit-btn').disabled = !(gdpr && filled);
+  }
+
+  function updateSliders() {
+    const w = +document.getElementById('importance_work').value;
+    const g = +document.getElementById('importance_goals').value;
+    const u = +document.getElementById('urgency').value;
+    document.getElementById('val-work').textContent    = w + '/5';
+    document.getElementById('val-goals').textContent   = g + '/5';
+    document.getElementById('val-urgency').textContent = u + '/5';
+    const score = w * 0.35 + g * 0.35 + u * 0.3;
+    document.getElementById('score-num').textContent = score.toFixed(1);
+    const badge = document.getElementById('score-badge');
+    if (score >= 4.5)      { badge.style.background='#fee2e2'; badge.style.color='#ef4444'; badge.textContent='Crítico'; document.getElementById('score-num').style.color='#ef4444'; }
+    else if (score >= 3.5) { badge.style.background='#fef3c7'; badge.style.color='#f59e0b'; badge.textContent='Alto';    document.getElementById('score-num').style.color='#f59e0b'; }
+    else if (score >= 2.5) { badge.style.background='#dbeafe'; badge.style.color='#3b82f6'; badge.textContent='Medio';   document.getElementById('score-num').style.color='#3b82f6'; }
+    else                   { badge.style.background='#f3f4f6'; badge.style.color='#6b7280'; badge.textContent='Bajo';    document.getElementById('score-num').style.color='#6b7280'; }
+  }
+
+  function maskEmail(e)   { return e.includes('@') ? e[0]+'***@'+e.split('@')[1] : e; }
+  function maskPhone(p)   { return p ? p.slice(0,3)+'***'+p.slice(-3) : ''; }
+  function maskAddress(a) { if(!a) return ''; const pts=a.split(','); return pts[0].replace(/\d+/g,'***')+(pts.length>1?', '+pts[1].trim().slice(0,4)+'…':''); }
+
+  async function enviarSolicitud() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    document.getElementById('error-msg').style.display = 'none';
+
+    const w = +document.getElementById('importance_work').value;
+    const g = +document.getElementById('importance_goals').value;
+    const u = +document.getElementById('urgency').value;
+    const score = w * 0.35 + g * 0.35 + u * 0.3;
+
+    const data = {
+      id: Date.now(),
+      name:             document.getElementById('name').value.trim(),
+      email:            maskEmail(document.getElementById('email').value.trim()),
+      phone:            maskPhone(document.getElementById('phone').value.trim()),
+      address:          maskAddress(document.getElementById('address').value.trim()),
+      department:       document.getElementById('department').value,
+      description:      document.getElementById('description').value.trim(),
+      importance_work:  w,
+      importance_goals: g,
+      urgency:          u,
+      score:            score,
+      status:           'pending',
+      createdAt:        new Date().toISOString().split('T')[0],
+      approvalStatus:   null,
+      selectedProduct:  null,
+      tracking:         null,
+      priceResults:     null,
+      duplicateAlert:   null,
+      isNonStandard:    false,
+      managerEmail:     '',
+      managerName:      '',
+    };
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'save_request', data })
+      });
+      const json = await res.json();
+      if (json.ok) {
+        document.getElementById('form-card').style.display    = 'none';
+        document.getElementById('success-card').style.display = 'block';
+      } else {
+        throw new Error(json.error || 'Error desconocido');
+      }
+    } catch(e) {
+      const err = document.getElementById('error-msg');
+      err.textContent = 'Ha ocurrido un error al enviar. Por favor inténtalo de nuevo.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enviar solicitud';
+    }
+  }
+</script>
+</body>
+</html>
